@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akram Jr — Coiffeur à Zellik</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a;
+    --noir-doux: #111111;
+    --or: #c9a84c;
+    --or-clair: #e8c97a;
+    --or-pale: #f5e6b8;
+    --blanc: #f8f5f0;
+    --gris: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--noir);
+    color: var(--blanc);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--or);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--or);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, opacity 0.3s;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 60px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--or);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--blanc);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+  }
+
+  .nav-links a:hover { opacity: 1; color: var(--or); }
+
+  .nav-cta {
+    background: var(--or);
+    color: var(--noir) !important;
+    padding: 10px 24px;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+    transition: background 0.3s !important;
+  }
+
+  .nav-cta:hover { background: var(--or-clair) !important; }
+
+  /* HERO */
+  #accueil {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 60px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 60%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    right: 0; top: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    opacity: 0.04;
+  }
+
+  .hero-lines::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--or),
+      var(--or) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--or);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 0.95;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--or);
+  }
+
+  .hero-sub {
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+    color: rgba(248,245,240,0.6);
+    max-width: 440px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s ease forwards;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s ease forwards;
+  }
+
+  .btn-primary {
+    background: var(--or);
+    color: var(--noir);
+    padding: 16px 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.3s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--or-clair); transform: translateY(-2px); }
+
+  .btn-secondary {
+    color: var(--blanc);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.7;
+    transition: opacity 0.3s, gap 0.3s;
+  }
+
+  .btn-secondary::after {
+    content: '→';
+    font-size: 1rem;
+    transition: transform 0.3s;
+  }
+
+  .btn-secondary:hover { opacity: 1; gap: 16px; }
+
+  .hero-number {
+    position: absolute;
+    right: 60px;
+    bottom: 60px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(201,168,76,0.4);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 60px;
+    margin: 20px 0;
+    opacity: 0.2;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--or);
+  }
+  .divider-icon {
+    width: 8px; height: 8px;
+    border: 1px solid var(--or);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* SERVICES */
+  #services {
+    padding: 120px 60px;
+    position: relative;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 80px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--or);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .section-title em { font-style: italic; color: var(--or); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(201,168,76,0.1);
+  }
+
+  .service-card {
+    background: var(--noir-doux);
+    padding: 52px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: none;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--or);
+    transition: width 0.4s ease;
+  }
+
+  .service-card:hover { background: #161616; }
+  .service-card:hover::before { width: 100%; }
+
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+    margin-bottom: 24px;
+    transition: color 0.4s;
+  }
+
+  .service-card:hover .service-num { color: rgba(201,168,76,0.3); }
+
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--blanc);
+  }
+
+  .service-desc {
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: var(--gris);
+    margin-bottom: 28px;
+  }
+
+  .service-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--or);
+    font-weight: 300;
+  }
+
+  /* RDV SECTION */
+  #rdv {
+    padding: 120px 60px;
+    background: var(--noir-doux);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #rdv::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 50%;
+  }
+
+  #rdv::after {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 280px; height: 280px;
+    border: 1px solid rgba(201,168,76,0.06);
+    border-radius: 50%;
+  }
+
+  .rdv-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .rdv-info p {
+    font-size: 0.8rem;
+    line-height: 2;
+    color: rgba(248,245,240,0.6);
+    margin-bottom: 40px;
+  }
+
+  .rdv-horaires {
+    margin-top: 40px;
+  }
+
+  .rdv-horaires h4 {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 20px;
+  }
+
+  .horaire-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+    color: rgba(248,245,240,0.7);
+  }
+
+  .horaire-line span:last-child { color: var(--or-clair); }
+
+  .rdv-form {
+    position: relative;
+    z-index: 2;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 10px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--blanc);
+    padding: 14px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s;
+    -webkit-appearance: none;
+  }
+
+  .form-group select option { background: var(--noir); }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--or);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .form-group textarea { height: 100px; resize: none; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .btn-form {
+    width: 100%;
+    background: var(--or);
+    color: var(--noir);
+    border: none;
+    padding: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-form:hover { background: var(--or-clair); transform: translateY(-2px); }
+
+  /* CONTACT */
+  #contact {
+    padding: 120px 60px;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    margin-top: 80px;
+  }
+
+  .contact-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .contact-item h4 {
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 12px;
+  }
+
+  .contact-item p, .contact-item a {
+    font-size: 0.85rem;
+    color: rgba(248,245,240,0.7);
+    line-height: 1.8;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .contact-item a:hover { color: var(--or); }
+
+  .map-placeholder {
+    background: var(--noir-doux);
+    border: 1px solid rgba(201,168,76,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 360px;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(201,168,76,0.04) 39px,
+      rgba(201,168,76,0.04) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(201,168,76,0.04) 39px,
+      rgba(201,168,76,0.04) 40px
+    );
+  }
+
+  .map-pin {
+    width: 48px; height: 48px;
+    border: 2px solid var(--or);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    position: relative;
+    animation: pulse-pin 2s ease-in-out infinite;
+  }
+
+  .map-pin::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 12px;
+    background: var(--or);
+    border-radius: 50%;
+  }
+
+  .map-addr {
+    font-size: 0.8rem;
+    color: rgba(248,245,240,0.5);
+    letter-spacing: 0.1em;
+    z-index: 1;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(201,168,76,0.15);
+    padding: 40px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--or);
+    font-weight: 600;
+  }
+
+  .footer-copy {
+    font-size: 0.65rem;
+    color: rgba(248,245,240,0.3);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-social a {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(248,245,240,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-social a:hover { color: var(--or); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse-pin {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50% { transform: rotate(-45deg) scale(1.1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SUCCESS MESSAGE */
+  .success-msg {
+    display: none;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--or);
+    padding: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--or);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 24px 24px; }
+    .nav-links { display: none; }
+    #accueil { padding: 0 24px; }
+    .hero-title { font-size: 3.2rem; }
+    .hero-btns { flex-direction: column; align-items: flex-start; }
+    #services { padding: 80px 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    #rdv { padding: 80px 24px; }
+    .rdv-inner { grid-template-columns: 1fr; gap: 60px; }
+    #contact { padding: 80px 24px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .divider { padding: 0 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-number { display: none; }
+    body { cursor: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#accueil" class="nav-logo">Akram Jr</a>
+  <ul class="nav-links">
+    <li><a href="#accueil">Accueil</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#rdv" class="nav-cta">Réserver</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="accueil">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Coiffeur · Zellik · Bruxelles</div>
+    <h1 class="hero-title">L'art de la<br><em>coupe parfaite</em></h1>
+    <p class="hero-sub">Une expérience de coiffure d'exception, où chaque détail compte. Akram Jr vous accueille dans un cadre raffiné pour sublimer votre style.</p>
+    <div class="hero-btns">
+      <a href="#rdv" class="btn-primary">Prendre rendez-vous</a>
+      <a href="#services" class="btn-secondary">Découvrir les services</a>
+    </div>
+  </div>
+  <div class="hero-number">Zellik · Bruxelles · Belgique</div>
+</section>
+
+<div class="divider"><div class="divider-icon"></div></div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Ce que nous faisons</div>
+      <h2 class="section-title">Nos <em>services</em></h2>
+    </div>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <h3 class="service-name">Coupe Homme</h3>
+      <p class="service-desc">Coupe classique ou moderne, adaptée à votre morphologie et votre style de vie. Finitions soignées au rasoir.</p>
+      <div class="service-price">À partir de 20€</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">02</div>
+      <h3 class="service-name">Barbe & Rasage</h3>
+      <p class="service-desc">Taille et mise en forme de la barbe avec produits premium. Rasage au coupe-chou traditionnel disponible.</p>
+      <div class="service-price">À partir de 15€</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">03</div>
+      <h3 class="service-name">Coupe + Barbe</h3>
+      <p class="service-desc">Le combo complet pour un look impeccable de la tête au menton. Notre prestation la plus appréciée.</p>
+      <div class="service-price">À partir de 30€</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04</div>
+      <h3 class="service-name">Coupe Enfant</h3>
+      <p class="service-desc">Pour les jeunes clients jusqu'à 12 ans. Patience et douceur garanties pour un résultat soigné.</p>
+      <div class="service-price">À partir de 12€</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">05</div>
+      <h3 class="service-name">Dégradé Américain</h3>
+      <p class="service-desc">Fondu parfait, contours nets. Un dégradé précis qui met en valeur votre style et votre personnalité.</p>
+      <div class="service-price">À partir de 25€</div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">06</div>
+      <h3 class="service-name">Soin & Traitement</h3>
+      <p class="service-desc">Masque capillaire, soin du cuir chevelu et traitement hydratant pour des cheveux en pleine santé.</p>
+      <div class="service-price">À partir de 18€</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-icon"></div></div>
+
+<!-- RDV -->
+<section id="rdv">
+  <div class="rdv-inner">
+    <div class="rdv-info reveal">
+      <div class="section-label">Réservation</div>
+      <h2 class="section-title">Prendre<br><em>rendez-vous</em></h2>
+      <p style="margin-top:28px;">Réservez votre créneau en ligne en quelques secondes. Nous vous confirmons votre rendez-vous dans les plus brefs délais.</p>
+
+      <div class="rdv-horaires">
+        <h4>Horaires d'ouverture</h4>
+        <div class="horaire-line"><span>Lundi – Vendredi</span><span>09:00 – 19:00</span></div>
+        <div class="horaire-line"><span>Samedi</span><span>09:00 – 18:00</span></div>
+        <div class="horaire-line"><span>Dimanche</span><span>Fermé</span></div>
+      </div>
+    </div>
+
+    <div class="rdv-form reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" placeholder="Mohamed" id="prenom">
+        </div>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" placeholder="Dupont" id="nom">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Téléphone</label>
+        <input type="tel" placeholder="+32 470 000 000" id="tel">
+      </div>
+      <div class="form-group">
+        <label>Service souhaité</label>
+        <select id="service">
+          <option value="">— Choisir un service —</option>
+          <option>Coupe Homme</option>
+          <option>Barbe & Rasage</option>
+          <option>Coupe + Barbe</option>
+          <option>Coupe Enfant</option>
+          <option>Dégradé Américain</option>
+          <option>Soin & Traitement</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date souhaitée</label>
+          <input type="date" id="date">
+        </div>
+        <div class="form-group">
+          <label>Heure</label>
+          <select id="heure">
+            <option value="">— Heure —</option>
+            <option>09:00</option><option>09:30</option>
+            <option>10:00</option><option>10:30</option>
+            <option>11:00</option><option>11:30</option>
+            <option>12:00</option><option>12:30</option>
+            <option>13:00</option><option>14:00</option>
+            <option>14:30</option><option>15:00</option>
+            <option>15:30</option><option>16:00</option>
+            <option>16:30</option><option>17:00</option>
+            <option>17:30</option><option>18:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Message (optionnel)</label>
+        <textarea placeholder="Précisions supplémentaires..." id="message"></textarea>
+      </div>
+      <button class="btn-form" onclick="submitRdv()">Confirmer la réservation</button>
+      <div class="success-msg" id="successMsg">✓ Votre demande a été envoyée ! Nous vous confirmons très vite.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="divider-icon"></div></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Nous trouver</div>
+  <h2 class="section-title reveal">Contact &<br><em>localisation</em></h2>
+
+  <div class="contact-grid">
+    <div class="contact-info-block reveal">
+      <div class="contact-item">
+        <h4>Adresse</h4>
+        <p>Zellik<br>Brabant flamand<br>Belgique</p>
+      </div>
+      <div class="contact-item">
+        <h4>Téléphone</h4>
+        <a href="tel:+32470000000">+32 470 000 000</a>
+      </div>
+      <div class="contact-item">
+        <h4>Email</h4>
+        <a href="mailto:contact@akramjr.be">contact@akramjr.be</a>
+      </div>
+      <div class="contact-item">
+        <h4>Instagram</h4>
+        <a href="#">@akramjr.coiffeur</a>
+      </div>
+    </div>
+
+    <div class="map-placeholder reveal">
+      <div class="map-pin"></div>
+      <p class="map-addr">Akram Jr · Zellik, Belgique</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Akram Jr</div>
+  <div class="footer-copy">© 2025 Akram Jr — Tous droits réservés</div>
+  <div class="footer-social">
+    <a href="#">Instagram</a>
+    <a href="#">Facebook</a>
+  </div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .service-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.5)';
+      ring.style.transform += ' scale(1.5)';
+      ring.style.opacity = '1';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.opacity = '0.6';
+    });
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // FORM
+  function submitRdv() {
+    const prenom = document.getElementById('prenom').value;
+    const service = document.getElementById('service').value;
+    const date = document.getElementById('date').value;
+    const heure = document.getElementById('heure').value;
+
+    if (!prenom || !service || !date || !heure) {
+      alert('Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    document.getElementById('successMsg').style.display = 'block';
+    document.querySelector('.btn-form').disabled = true;
+    document.querySelector('.btn-form').style.opacity = '0.5';
+
+    setTimeout(() => {
+      ['prenom','nom','tel','service','date','heure','message'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+    }, 2000);
+  }
+
+  // NAV active
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.background = window.scrollY > 50
+      ? 'rgba(10,10,10,0.97)'
+      : 'linear-gradient(to bottom, rgba(10,10,10,0.95), transparent)';
+  });
+</script>
+</body>
+</html>
